@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 var source = fs.readFileSync(
-        path.resolve(__dirname, './test/source/selectors.css'),
+        path.resolve(__dirname, './test/source/rule.css'),
         'utf-8'
       )
 
@@ -47,6 +47,7 @@ var source = fs.readFileSync(
    */
   function selector() {
     let m = match(/^[^{]+/)
+
     if (!m) return
     return trim(m[0])
   }
@@ -81,16 +82,16 @@ var source = fs.readFileSync(
   function declarations() {
     let decls = []
     
-    if (!open()) throw new Error("missing '{'");
+    if (!open()) throw new Error("missing '{'");//去掉{
 
-    // declarations
+    // declarations进行大括号中间的属性匹配
     var decl;
     while (decl = declaration()) {
       if (decl !== false) {
         decls.push(decl)
       }
     }
-    if (!close()) throw new Error("missing '}'");
+    if (!close()) throw new Error("missing '}'");//去掉}
     return decls
   }
 
@@ -115,12 +116,13 @@ var source = fs.readFileSync(
     let rules = []
     // 清除 source 起始空格
     whitespace()
+    
     while (source.length && source.charAt(0) != '}' && (node = rule())) {
       if (node !== false) {
+        //console.log(node)//!!!!!!!!!!!!!!!!!!!!!!!!!!
         rules.push(node)
       }
     }
-    console.log(rules)
     return rules
   }
 
